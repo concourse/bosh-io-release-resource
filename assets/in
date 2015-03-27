@@ -14,6 +14,16 @@ repository=$(jq -r '.source.repository // ""' < $payload)
 version=$(jq -r '.version.version // ""' < $payload)
 fetch_tarball=$(jq -r '.params.tarball != false' < $payload)
 
+if [ -z "$repository" ]; then
+  echo "must specify source repository"
+  exit 1
+fi
+
+if [ -z "$version" ]; then
+  echo "must specify version"
+  exit 1
+fi
+
 destination=$1
 
 if [ -z "$destination" ]; then

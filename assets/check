@@ -23,11 +23,7 @@ fi
 
 releases=$(mktemp $TMPDIR/bosh-io-release-versions.XXXXXX)
 
-curl_f() {
-  curl -s -f "$@"
-}
-
-curl_f http://bosh.io/api/v1/releases/github.com/$repository -o $releases
+curl -s -f http://bosh.io/api/v1/releases/github.com/$repository -o $releases
 
 last_idx=0
 if [ -z "$current_version" ]; then

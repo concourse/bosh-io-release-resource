@@ -1,0 +1,46 @@
+#!/bin/sh
+# vim: set ft=sh
+
+set -e
+
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
+
+# for jq
+PATH=/usr/local/bin:$PATH
+
+payload=$(mktemp $TMPDIR/bosh-io-release-resource-request.XXXXXX)
+
+cat > $payload <&0
+
+repository=$(jq -r '.source.repository // ""' < $payload)
+current_version=$(jq -r '.version.version // ""' < $payload)
+
+if [ -z "$repository" ]; then
+  echo "must specify source repository"
+  exit 1
+fi
+
+releases=$(mktemp $TMPDIR/bosh-io-release-versions.XXXXXX)
+
+curl_f() {
+  curl -s -f "$@"
+}
+
+curl_f http://bosh.io/api/v1/releases/github.com/$repository -o $releases
+
+last_idx=0
+if [ -z "$current_version" ]; then
+  last_idx=1
+else
+  existing_index=$(jq 'map(.version) | index($v)' --arg v $current_version < $releases)
+
+  if [ "$existing_index" = "null" ]; then
+    echo "version $current_version not found; using latest..."
+    last_idx=1
+  else
+    last_idx=$existing_index
+  fi
+fi
+
+jq ".[0:$last_idx] | map({version})" < $releases >&3

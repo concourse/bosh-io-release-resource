@@ -1,0 +1,43 @@
+#!/bin/sh
+# vim: set ft=sh
+
+set -e
+
+exec 3>&1 # make stdout available as fd 3 for the result
+exec 1>&2 # redirect all output to stderr for logging
+
+payload=$(mktemp $TMPDIR/bosh-io-release-resource-request.XXXXXX)
+
+cat > $payload <&0
+
+repository=$(jq -r '.source.repository // ""' < $payload)
+version=$(jq -r '.version.version // ""' < $payload)
+fetch_tarball=$(jq -r '.params.tarball != false' < $payload)
+
+destination=$1
+
+if [ -z "$destination" ]; then
+  echo "usage: $0 <path/to/destination>" >&2
+  exit 1
+fi
+
+mkdir -p $destination
+
+download_url="https://bosh.io/d/github.com/${repository}?v=${version}"
+
+echo "$download_url" > $destination/url
+echo "$version" > $destination/version
+
+if [ "$fetch_tarball" = "true" ]; then
+  # todo cppforlife should check md5s
+  curl -L "$download_url" -o $destination/release.tgz
+fi
+
+jq -n '{
+  version: {
+    version: $version
+  },
+  metadata: [
+    {url: $url}
+  ]
+}' --arg version "$version" --arg url "$download_url" >&3

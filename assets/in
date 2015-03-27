@@ -28,33 +28,8 @@ download_url="https://bosh.io/d/github.com/${repository}?v=${version}"
 echo "$download_url" > $destination/url
 echo "$version" > $destination/version
 
-fetch_tarball_with_retry() {
-  local max_attempts=$1
-  local attempts=0
-
-  while true; do
-    # todo cppforlife should check md5s
-    curl -f -L "$download_url" -o $destination/release.tgz || exitstatus=$?
-
-    attempts=$(expr $attempts + 1)
-
-    if [ "$exitstatus" = 0 ] || [ "$attempts" = "$max_attempts" ]; then
-      break
-    fi
-
-    sleep 10
-  fi
-
-  if [ "$exitstatus" != 0 ]; then
-    echo "giving up after $max_attempts attempts"
-    return "$exitstatus"
-  fi
-
-  return 0
-}
-
 if [ "$fetch_tarball" = "true" ]; then
-  fetch_tarball_with_retry 3
+  curl --retry 5 --fail -L "$download_url" -o $destination/release.tgz
 fi
 
 jq -n '{

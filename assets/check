@@ -43,4 +43,4 @@ else
   fi
 fi
 
-jq ".[0:$last_idx] | map({version})" < $releases >&3
+jq ".[0:$last_idx] | map({version}) | reverse" < $releases >&3

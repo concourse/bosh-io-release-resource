@@ -62,6 +62,6 @@ jq -n '{
     version: $version
   },
   metadata: [
-    {url: $url}
+    {name: "url", value: $url}
   ]
 }' --arg version "$version" --arg url "$download_url" >&3

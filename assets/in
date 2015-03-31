@@ -38,8 +38,21 @@ download_url="https://bosh.io/d/github.com/${repository}?v=${version}"
 echo "$download_url" > $destination/url
 echo "$version" > $destination/version
 
+fetch_release_tarball() {
+  local destination=$1
+
+  local tmp_release=$(mktemp $TMPDIR/bosh-release.XXXXXX)
+
+  curl --retry 5 --fail -L "$download_url" -o $tmp_release
+
+  # fetch name from tarball; this will be easier once bosh.io has it via API
+  local name=$(tar -x -O -f $tmp_release release.MF | grep ^name: | awk '{print $2;}')
+
+  mv $tmp_release $destination/${name}-${version}.tgz
+}
+
 if [ "$fetch_tarball" = "true" ]; then
-  curl --retry 5 --fail -L "$download_url" -o $destination/release.tgz
+  fetch_release_tarball $destination
 fi
 
 jq -n '{

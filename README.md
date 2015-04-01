@@ -34,10 +34,9 @@ GitHub, and it appearing in bosh.io.
 
 Fetches a given release, placing the following in the destination:
 
-* `name`: The name of the release.
 * `version`: The version number of the release.
 * `url`: A URL that can be used to download the release tarball.
-* `{name}-{version}.tgz`: The release tarball, if the `tarball` param is `true`.
+* `release.tgz`: The release tarball, if the `tarball` param is `true`.
 
 #### Parameters
 

@@ -18,7 +18,7 @@ resources:
 
 * `repository`: *Required.* The GitHub repository of the release, i.e.
 `username/reponame`.
-
+* `release_version`: Optional. Lock to a specific release version. Must be a string (enclose in "quotes"). Used only when downloading releases during in.
 
 ## Behavior
 
@@ -26,9 +26,11 @@ resources:
 
 Detects new versions of the release that have been published to bosh.io.
 
+If a `release_version` is specified it will always be returned as
+lastest.
+
 Note that there may be a delay between the final release appearing on
 GitHub, and it appearing in bosh.io.
-
 
 ### `in`: Fetch a version of the release.
 

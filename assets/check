@@ -15,6 +15,12 @@ cat > $payload <&0
 
 repository=$(jq -r '.source.repository // ""' < $payload)
 current_version=$(jq -r '.version.version // ""' < $payload)
+release_version=$(jq -r '.source.release_version // ""' < $payload)
+
+if [ -z "$release_version" ]; then
+  echo "Getting with user-specified release_version: ${release_version}."
+  $current_version=$release_version
+fi
 
 if [ -z "$repository" ]; then
   echo "must specify source repository"

@@ -24,7 +24,7 @@ resources:
 
 ### `check`: Check for new versions of the release.
 
-Detects new versions of the release that have been published to bosh.io.
+Detects new versions of the release that have been published to [bosh.io](https://bosh.io). If no version is specified, `check` returns the latest version, otherwise `check` returns all versions from the version specified on.
 
 Note that there may be a delay between the final release appearing on
 GitHub, and it appearing in bosh.io.

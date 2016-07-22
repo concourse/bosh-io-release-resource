@@ -34,9 +34,21 @@ fi
 mkdir -p $destination
 
 download_url="https://bosh.io/d/github.com/${repository}?v=${version}"
+sha1=$(
+  curl \
+    --retry 5 \
+    --fail \
+    --location \
+    "https://bosh.io/api/v1/releases/github.com/${repository}" \
+  | jq \
+    --raw-output \
+    --arg version $version \
+    '.[] | select(.version==$version) | .sha1 // ""'
+  )
 
 echo "$download_url" > $destination/url
 echo "$version" > $destination/version
+echo "$sha1" > $destination/sha1
 
 if [ "$fetch_tarball" = "true" ]; then
   curl --retry 5 --fail -L "$download_url" -o $destination/release.tgz
@@ -47,6 +59,6 @@ jq -n '{
     version: $version
   },
   metadata: [
-    {name: "url", value: $url}
+    {name: "url", value: $url, sha1: $sha1}
   ]
-}' --arg version "$version" --arg url "$download_url" >&3
+}' --arg version "$version" --arg url "$download_url" --arg sha1 "$sha1" >&3

@@ -10,6 +10,7 @@ payload=$(mktemp $TMPDIR/bosh-io-release-resource-request.XXXXXX)
 
 cat > $payload <&0
 
+server=$(jq -r '.source.server // "https://bosh.io"' < $payload)
 repository=$(jq -r '.source.repository // ""' < $payload)
 version=$(jq -r '.version.version // ""' < $payload)
 fetch_tarball=$(jq -r '.params.tarball != false' < $payload)
@@ -40,7 +41,7 @@ curl \
   --retry 5 \
   --fail \
   --location \
-  "https://bosh.io/api/v1/releases/github.com/${repository}" | \
+  "$server/api/v1/releases/github.com/${repository}" | \
   jq 'map(select(.version == $version))[0]' --arg version "$version" > \
   $release_data
 

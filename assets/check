@@ -13,6 +13,7 @@ payload=$(mktemp $TMPDIR/bosh-io-release-resource-request.XXXXXX)
 
 cat > $payload <&0
 
+server=$(jq -r '.source.server // "https://bosh.io"' < $payload)
 repository=$(jq -r '.source.repository // ""' < $payload)
 current_version=$(jq -r '.version.version // ""' < $payload)
 
@@ -23,7 +24,7 @@ fi
 
 releases=$(mktemp $TMPDIR/bosh-io-release-versions.XXXXXX)
 
-curl --retry 5 -L -s -f https://bosh.io/api/v1/releases/github.com/$repository -o $releases
+curl --retry 5 -L -s -f $server/api/v1/releases/github.com/$repository -o $releases
 
 last_idx=0
 if [ -z "$current_version" ]; then

@@ -18,6 +18,7 @@ resources:
 
 * `repository`: *Required.* The GitHub repository of the release, i.e.
 `username/reponame`.
+* `server`: Default `https://bosh.io`. The bosh-hub server to query.
 
 
 ## Behavior

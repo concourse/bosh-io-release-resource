@@ -37,7 +37,7 @@ Fetches a given release, placing the following in the destination:
 * `version`: The version number of the release.
 * `url`: A URL that can be used to download the release tarball.
 * `sha1`: The sha1 of the release tarball.
-* `release.tgz`: The release tarball, if the `tarball` param is `true`.
+* `<release>-<version>.tgz`: The release tarball, if the `tarball` param is `true`. Release name is inferred from the bosh.io repository path.
 
 #### Parameters
 

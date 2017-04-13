@@ -46,6 +46,8 @@ curl \
 
 url="$(jq -r .url < $release_data)"
 sha1="$(jq -r .sha1 < $release_data)"
+name="${repository#*/}"
+filename="${name}-${version}"
 
 if [ "$url" = "null" ]; then
   echo "version $version not found; aborting"
@@ -58,8 +60,8 @@ echo "$sha1" > $destination/sha1
 
 if [ "$fetch_tarball" = "true" ]; then
   pushd $destination >/dev/null
-    curl --retry 5 --fail -L "$url" -o release.tgz
-    echo "$sha1  release.tgz" | sha1sum -c -
+    curl --retry 5 --fail -L "$url" -o "${filename}".tgz
+    echo "$sha1  ${filename}.tgz" | sha1sum -c -
   popd >/dev/null
 fi
 

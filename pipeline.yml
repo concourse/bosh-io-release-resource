@@ -1,0 +1,16 @@
+resource_types:
+- name: test-resource
+  type: docker-image
+  source:
+    repository: concourse/deleteme-bosh-io-release-resource
+
+resources:
+- name: concourse
+  type: test-resource
+  source:
+    repository: concourse/concourse
+
+jobs:
+- name: test
+  plan:
+  - get: concourse

@@ -18,6 +18,8 @@ resources:
 
 * `repository`: *Required.* The GitHub repository of the release, i.e.
 `username/reponame`.
+* `regexp`: *Optional* A regular expression matching the version(s) to fetch, i.e.
+`13.*`.
 
 
 ## Behavior

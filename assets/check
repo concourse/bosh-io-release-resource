@@ -14,6 +14,7 @@ payload=$(mktemp $TMPDIR/bosh-io-release-resource-request.XXXXXX)
 cat > $payload <&0
 
 repository=$(jq -r '.source.repository // ""' < $payload)
+regexp=$(jq -r '.source.regexp // ""' < $payload)
 current_version=$(jq -r '.version.version // ""' < $payload)
 
 if [ -z "$repository" ]; then
@@ -21,9 +22,14 @@ if [ -z "$repository" ]; then
   exit 1
 fi
 
+if [ -z "$regexp" ]; then
+  regexp=".*"
+fi
+
 releases=$(mktemp $TMPDIR/bosh-io-release-versions.XXXXXX)
 
-curl --retry 5 -L -s -f https://bosh.io/api/v1/releases/github.com/$repository -o $releases
+curl --retry 5 -L -s -f https://bosh.io/api/v1/releases/github.com/$repository \
+  | jq '[.[] | select (.version | test($v))]' --arg v "$regexp" > $releases
 
 last_idx=0
 if [ -z "$current_version" ]; then

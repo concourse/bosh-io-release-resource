@@ -13,8 +13,6 @@ FROM resource AS tests
 RUN apk --no-cache add ruby ruby-libs ruby-bundler ruby-json
 ADD . /resource
 WORKDIR /resource
-RUN ls -asl /opt/resource
-RUN bundle install --local
-RUN bundle exec rspec
-
+RUN bundle install --local \
+  && bundle exec rspec
 FROM resource

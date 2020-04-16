@@ -10,7 +10,7 @@ resources:
 - name: concourse
   type: bosh-io-release
   source:
-    repository: concourse/concourse
+    repository: concourse/concourse-bosh-release
 ```
 
 

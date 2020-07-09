@@ -17,6 +17,7 @@ RUN apt-get update \
   && rm -rf /var/lib/apt/lists/*
 ADD . /resource
 WORKDIR /resource
+RUN gem update --system && gem install bundler #switch to bundle 2.1.4
 RUN bundle install --local \
   && bundle exec rspec
 FROM resource

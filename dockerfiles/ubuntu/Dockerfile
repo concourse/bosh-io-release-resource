@@ -1,11 +1,11 @@
-FROM ubuntu:bionic AS resource
+ARG base_image
 
+FROM ${base_image} AS resource
 RUN apt-get update && apt-get install -y --no-install-recommends \
     curl \
     ca-certificates \
     jq \
   && rm -rf /var/lib/apt/lists/*
-
 ADD assets/ /opt/resource/
 RUN chmod +x /opt/resource/*
 

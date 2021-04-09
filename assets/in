@@ -46,6 +46,7 @@ curl \
 
 url="$(jq -r .url < $release_data)"
 sha1="$(jq -r .sha1 < $release_data)"
+sha256="$(jq -r '.sha256 // "null"' < $release_data)"
 
 if [ "$url" = "null" ]; then
   echo "version $version not found; aborting"
@@ -55,18 +56,26 @@ fi
 echo "$url" > $destination/url
 echo "$version" > $destination/version
 echo "$sha1" > $destination/sha1
+if ! [ "$sha256" = "null" ]; then
+  echo "$sha256" > $destination/sha256
+fi
 
 if [ "$fetch_tarball" = "true" ]; then
   pushd $destination >/dev/null
     curl --retry 5 --fail -L "$url" -o release.tgz
-    echo "$sha1  release.tgz" | sha1sum -c -
+    if [ "$sha256" = "null" ]; then
+      echo "$sha1  release.tgz" | sha1sum -c -
+    else
+      echo "$sha256  release.tgz" | sha256sum -c -
+    fi
   popd >/dev/null
 fi
 
 jq -n '{
   version: { version: $version },
-  metadata: [
+  metadata: ([
     { name: "url", value: $url },
-    { name: "sha1", value: $sha1 }
-  ]
-}' --arg version "$version" --arg url "$url" --arg sha1 "$sha1" >&3
+    { name: "sha1", value: $sha1 },
+    { name: "sha256", value: $sha256 }
+  ] | map(select(.value != "null")))
+}' --arg version "$version" --arg url "$url" --arg sha1 "$sha1" --arg sha256 "$sha256" >&3

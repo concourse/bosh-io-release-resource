@@ -63,7 +63,7 @@ will stop the build.
 Run the tests with the following command:
 
 ```sh
-docker build -t bosh-io-release-resource docker --targets tests --build-arg base_image=concourse/resource-types-base-image-static:latest .
+docker build -t bosh-io-release-resource docker --target tests --build-arg base_image=concourse/resource-types-base-image-static:latest .
 ```
 
 ### Contributing

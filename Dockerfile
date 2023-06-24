@@ -19,6 +19,11 @@ RUN bundle install --local && bundle exec rspec
 
 FROM ${base_image} AS resource
 USER root
+
+COPY --from=busybox:uclibc /bin/mktemp /bin/
+COPY --from=stedolan/jq /usr/local/bin/jq /bin/
+COPY --from=tarampampam/curl /bin/curl /bin/
+
 ADD assets/ /opt/resource/
 RUN chmod +x /opt/resource/*
 

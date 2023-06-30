@@ -21,6 +21,9 @@ FROM ${base_image} AS resource
 USER root
 
 COPY --from=busybox:uclibc /bin/mktemp /bin/
+COPY --from=busybox:uclibc /bin/mkdir /bin/
+COPY --from=busybox:uclibc /bin/sha256sum /bin/
+COPY --from=busybox:uclibc /bin/sha1sum /bin/
 COPY --from=stedolan/jq /usr/local/bin/jq /bin/
 COPY --from=tarampampam/curl /bin/curl /bin/
 

@@ -12,7 +12,7 @@ RUN apt update && apt install -y --no-install-recommends \
   ruby-full \
   && rm -rf /var/lib/apt/lists/*
 ADD assets/ /opt/resource/
-RUN wget "https://github.com/moparisthebest/static-curl/releases/download/v8.10.1/curl-amd64" -O /opt/resource/curl
+RUN wget "https://github.com/moparisthebest/static-curl/releases/download/v8.11.0/curl-amd64" -O /opt/resource/curl
 RUN chmod +x /opt/resource/*
 ADD . /resource
 WORKDIR /resource

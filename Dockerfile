@@ -13,6 +13,7 @@ RUN apt update && apt install -y --no-install-recommends \
   && rm -rf /var/lib/apt/lists/*
 ADD assets/ /opt/resource/
 RUN wget "https://github.com/moparisthebest/static-curl/releases/download/v8.11.0/curl-amd64" -O /opt/resource/curl
+RUN wget  "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64" -O /opt/resource/jq
 RUN chmod +x /opt/resource/*
 ADD . /resource
 WORKDIR /resource
@@ -26,7 +27,6 @@ COPY --from=busybox:uclibc /bin/mktemp /bin/
 COPY --from=busybox:uclibc /bin/mkdir /bin/
 COPY --from=busybox:uclibc /bin/sha256sum /bin/
 COPY --from=busybox:uclibc /bin/sha1sum /bin/
-COPY --from=stedolan/jq /usr/local/bin/jq /bin/
 COPY --from=tests /opt/resource/curl /bin/
 
 ADD assets/ /opt/resource/

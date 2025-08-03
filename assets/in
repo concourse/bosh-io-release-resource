@@ -61,11 +61,17 @@ fi
 
 if [ "$fetch_tarball" = "true" ]; then
   ( cd $destination
-    curl --retry 5 --fail -L "$url" -o release.tgz
-    if [ "$sha256" = "null" ]; then
-      echo "$sha1  release.tgz" | sha1sum -c -
+    if [ "$preserve_filename" = "true" ]; then
+      curl --retry 5 --fail -L "$url"
     else
-      echo "$sha256  release.tgz" | sha256sum -c -
+      curl --retry 5 --fail -L "$url" -o release.tgz
+    fi
+
+    RELEASE_FILE=$(find . -maxdepth 1 -type f -name "*.tgz" | head -n 1)
+    if [ "$sha256" = "null" ]; then
+      echo "$sha1  $RELEASE_FILE" | sha1sum -c -
+    else
+      echo "$sha256  $RELEASE_FILE" | sha256sum -c -
     fi
   )
 fi

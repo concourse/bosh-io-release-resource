@@ -54,8 +54,8 @@ Fetches a given release, placing the following in the destination:
 
 ### Prerequisites
 
-* docker is *required* - version 17.06.x is tested; earlier versions may also
-  work.
+* docker is *required* - version 23.x using buildx is tested; earlier versions
+  using buildx may also work
 
 ### Running the tests
 
